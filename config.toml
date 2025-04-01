@@ -92,6 +92,13 @@ style = "github-dark"
 
 
 # Menu links
+
+[[menu.main]]
+  name = "Home"
+  weight = 49
+  url  = "https://blog.esc.sh"
+
+
 [[menu.main]]
   name = "Self Hosting"
   weight = 50
