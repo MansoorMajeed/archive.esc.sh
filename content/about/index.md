@@ -10,4 +10,4 @@ url: about
 Hi, 
 
 This is Mansoor. And this is my archived blog. I decided to consolidate and start over after a decade of
-random stuff. Visit my new blog at [blog.esc.sh](blog.esc.sh)
+random stuff. Visit my new blog at [blog.esc.sh](https://blog.esc.sh)
