@@ -1,0 +1,134 @@
+baseurl = "https://archive.esc.sh"
+title = "Esc.sh Archive"
+theme = "hugo-coder"
+languagecode = "en"
+defaultcontentlanguage = "en"
+
+paginate = 20
+
+[markup.highlight]
+style = "github-dark"
+
+
+# This is needed to add raw html to markdown
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[params]
+  author = "Mansoor"
+  info = "Site Reliability Engineer"
+  description = "This is my old blog."
+  keywords = "blog,sre,devops,personal"
+  avatarurl = "images/avatar.jpg"
+
+  favicon_32 = "images/favicon.png"
+# favicon_16 = "/img/favicon-16x16.png"
+  gitRepo = "https://github.com/MansoorMajeed/archive.esc.sh"
+
+  customCSS = ["/css/custom.css"]
+
+  since = 2012
+
+  enableTwemoji = true
+
+  colorScheme = "auto"
+  hidecolorschemetoggle = false
+
+  # customCSS = ["css/custom.css"]
+  # customSCSS = ["scss/custom.scss"]
+  # customJS = ["js/custom.js"]
+
+#[params.goatCounter]
+#code = "esc"
+
+[params.plausibleAnalytics]
+  domain = "archive.esc.sh"
+  serverURL = "plaus.esc.sh"
+
+# Giscus comments
+[params.giscus] # https://giscus.app
+  repo = "MansoorMajeed/esc.sh"
+  repoID = "R_kgDOJmOhmg"
+  category = "Esc.sh Comments"
+  categoryID = "DIC_kwDOJmOhms4CWqw2"
+  mapping = "pathname"
+  term = ""
+  strict = "0"
+  reactionsEnabled = "1"
+  emitMetadata = "0"
+  inputPosition = "top"
+  theme = "preferred_color_scheme"
+  lang = "en"
+  loading = "lazy"
+
+
+[taxonomies]
+  category = "categories"
+  series = "series"
+  tag = "tags"
+  author = "authors"
+
+# Social links
+[[params.social]]
+  name = "Github"
+  icon = "fa fa-github fa-2x"
+  weight = 1
+  url = "https://github.com/mansoormajeed/"
+
+[[params.social]]
+  name = "YouTube"
+  icon = "fa fa-youtube fa-2x"
+  weight = 1
+  url = "https://www.youtube.com/@esc-sh/"
+
+[[params.social]]
+  name = "LinkedIn"
+  icon = "fa fa-linkedin fa-2x"
+  weight = 1
+  url = "https://www.linkedin.com/in/mansoormajeed/"
+
+
+
+# Menu links
+[[menu.main]]
+  name = "Self Hosting"
+  weight = 50
+  url = "https://selfhost.esc.sh"
+
+
+[[menu.main]]
+  name = "DevopsFromScratch"
+  weight = 100
+  url = "projects/devops-from-scratch/"
+
+[[menu.main]]
+  name = "Projects"
+  weight = 200
+  url = "projects/"
+
+[[menu.main]]
+  name = "Blog Archive"
+  weight = 300
+  url  = "blog/"
+
+[[menu.main]]
+  name = "Tech"
+  weight = 400
+  url  = "https://blog.esc.sh"
+
+
+[[menu.main]]
+  name = "Life"
+  weight = 700
+  url  = "https://life.esc.sh"
+
+[[menu.main]]
+  name = "About"
+  weight = 1000
+  url = "about/"
+
+
+
+
