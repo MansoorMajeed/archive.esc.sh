@@ -17,6 +17,14 @@ url: blog/pritunl-easy-openvpn-management
 Setting up OpenVPN on your own server can be real pain in the a**. I know a lot of you would agree with me there. 
 Today, I'll show you guys how to setup OpenVPN and manage users without any hiccups. I don't think this can get any easier. Enter `Pritunl`. You install a few packages and you're done. You have a fully functional VPN server with a web interface where you can manage your users, servers, organizations etc.
 
+### Update: Use the current Pritunl installation guide
+
+This post was written in 2016 for Ubuntu 14.04 and MongoDB 3.2. Those versions are obsolete; don't use the repository URLs, signing-key commands, or package instructions below for a new VPN server.
+
+For a new installation, use a currently supported Linux distribution and follow the [official Pritunl installation guide](https://docs.pritunl.com/docs/installation) for its supported operating systems, dependencies, and setup steps. Don't assume the latest release of your preferred distribution is supported—check the guide first.
+
+The original walkthrough remains below for historical reference. I haven't retested it with current Pritunl releases, so the interface and authentication steps may have changed. Before exposing a VPN server to the internet, follow the current security guidance, use strong credentials, and keep the server updated.
+
 ### What is Pritunl?
 Pritunl is a distributed enterprise vpn server built using the OpenVPN protocol. It is free and open source. For more information, go to [Pritunl.com](https://pritunl.com)
 
@@ -31,7 +39,7 @@ And follow the instructions corresponding to your distro, install the packages a
 
 If you are using an Ubuntu 14.04 machine, Open a Terminal and issue the following commands one by one. 
 
-```
+```bash
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" > /etc/apt/sources.list.d/mongodb-org-3.2.list
 echo "deb http://repo.pritunl.com/stable/apt trusty main" > /etc/apt/sources.list.d/pritunl.list
 
@@ -45,7 +53,7 @@ And, that should install and start the Pritunl server on your VPS.
 
 #### The initial setup
 * Once the installation is finished, go to `https://your-server-ip`. You can use the command `curl ip.esc.sh` to get the public IP of your VPS.  
-You will get a warning from your browser sayin that the connection is insecure, you can safely discard this warning as this is caused by the self signed certificates being used by pritunl. 
+A self-signed certificate can trigger a browser warning during initial setup. Verify that you're connecting to your own server and check its certificate before proceeding; don't dismiss an unexpected certificate warning. Configure a trusted TLS certificate for ongoing use.
 * Run the command `pritunl setup-key` in the VPS and copy the setup key. Paste it in the web interface. Leave the mongodb url as it is and click save
 
 #### Create a Server and User
@@ -54,7 +62,7 @@ You will get a warning from your browser sayin that the connection is insecure, 
 * Back in the servers tab, click on `attach organization`, and then attach the server to the organization you just created. 
 
 #### Create a user and start the server
-* Click on the users tab, and then `Add user`. Give a name for the user, and a pin. This pin is used for the authentication. So, give something strong. For now, i will use "123456".
+* Click on the users tab, and then `Add user`. Give a name for the user, and a pin. This PIN is used for authentication. Choose a strong, unique PIN; don't use a short, predictable value such as "123456".
 * Back in `Servers` tab, start the server by pressing "Start server".
 
 #### Final steps
