@@ -19,7 +19,7 @@ My Laptop : Acer Aspire E15 (E5-573G-3100)
 
 ### This is how I fixed the WiFi issue in my Laptop
 
-> Update : The WiFi issues are fixed in later versions of Linux Kernel. So, I'd suggest you to use a later version of Linux Distro Like Ubuntu 16.04, Linux Mint 18 or even the latest version of Kali Linux and you shouldn't face any WiFi issue
+> Update: This fix is from 2016. Try the latest stable release of [Fedora](https://fedoraproject.org/) or [Ubuntu](https://ubuntu.com/download/desktop) first. Don't install this old driver backport or overwrite your firmware on a modern system. If WiFi still doesn't work, check your distro's current troubleshooting docs. I haven't retested this laptop with recent releases.
 
 ##### Identify your WiFi device. Open a terminal and issue 
   

@@ -14,6 +14,8 @@ url: blog/fixing-linux-on-razer-blade-stealth-2019
 ---
 
 
+> Update: These fixes are from 2021. Before trying them, install the latest stable release of [Fedora](https://fedoraproject.org/) or [Ubuntu](https://ubuntu.com/download/desktop), along with its kernel updates. You may not need the workarounds below. I haven't retested this laptop with recent releases.
+
 ## Problems
 
 1. Does not wake up from sleep
@@ -27,7 +29,7 @@ A lot of the issues are fixed on the later versions of the Kernel. First, make s
 
 We can use a simple script from [HERE](https://github.com/pimlie/ubuntu-mainline-kernel.sh) to easily install the latest Kernel.
 
-> Note: If you are installing a Kernel manually, you will have to disable secure boot in bios
+> The script below installs a mainline kernel outside your distro's normal updates. Stick with your distro's supported kernel first; don't disable Secure Boot just to follow this old guide.
 
 ```bash
 sudo apt install wget
@@ -89,7 +91,7 @@ options root=UUID=350fc3dc-9ed1-440d-9a8f-922ee8c6511f ro quiet loglevel=0 syste
 
 ## Fix suspend loop
 
-Create a new file at `/etc/modprobe.md/blacklist-nvidia.conf` with the content
+Create a new file at `/etc/modprobe.d/blacklist-nvidia.conf` with the content
 
 ```text
 blacklist i2c_nvidia_gpu

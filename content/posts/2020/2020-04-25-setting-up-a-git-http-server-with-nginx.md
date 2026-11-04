@@ -91,6 +91,8 @@ sudo chown -R www-data:www-data /srv/git
 
 ## Configuring Nginx
 
+> Update: The config below only sets up HTTP. Before using it with real credentials, configure HTTPS with a trusted certificate. Basic authentication over HTTP exposes your username and password to anyone who can intercept the connection. The clone examples below assume you've added HTTPS.
+
 Now that we have our repository ready to serve, let's setup Nginx.
 
 Create your nginx config file at `/etc/nginx/sites-enabled/git` or whatever file you want to. Copy the following into it
@@ -162,16 +164,24 @@ By this point, you should have everything you need (theoretically speaking)
 
 Let's see if it works.
 
-From one of your client, run the below command. Make note of the username and password. `user:foo` and make sure you replace it with the correct username and password from the previous step.
+From one of your clients, run the command below and enter your username and password when prompted. Don't put the password in the URL; it can end up in your shell history and Git config.
 
 ```bash
-git clone http://user:foo@git.mydomain.com/repo1
+git clone https://git.mydomain.com/repo1
 ```
+
+To avoid entering your credentials on every pull or push, you can have Git cache them in memory for an hour:
+
+```bash
+git config --global credential.helper 'cache --timeout=3600'
+```
+
+Run this before your next pull or push, then enter your credentials once. Git will ask again after the cache expires. This setting applies to all your repositories; leave out `--global` and run it inside the repository if you only want it there.
 
 Now you should be able to do your usual git things. (At least it works for me :shrug: )
 
 ```bash
-➜  /tmp git clone http://user:foo@git.mydomain.com/repo1
+➜  /tmp git clone https://git.mydomain.com/repo1
 Cloning into 'repo1'...
 remote: Enumerating objects: 3, done.
 remote: Counting objects: 100% (3/3), done.
@@ -194,7 +204,7 @@ Enumerating objects: 5, done.
 Counting objects: 100% (5/5), done.
 Writing objects: 100% (3/3), 251 bytes | 251.00 KiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0)
-To http://git.mydomain.com/repo1
+To https://git.mydomain.com/repo1
    5d42d6c..b20c024  master -> master
 ➜  repo1 git:(master)
 ➜  repo1 git:(master)
