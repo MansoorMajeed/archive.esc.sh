@@ -16,17 +16,17 @@ url: blog/linux-on-lenovo-miix-320
 
 Lenovo Miix 320 is a tiny convertible laptop that doesn't put a hole in your wallet. It's an amazing piece of hardware with one major flaw - It comes with Windows 10. But, worry not, I was able to successfully install and use Ubuntu 18.04 on this tiny laptop, and it is pretty neat.
 
-### UPDATE!! Please read
+### Update: Try a current Linux release first
 
-The original blog post was about installing Ubuntu 18.04 on your Miix 320. It took lot of effort to get the system to a usable state. But, I came across Pop OS by System76 (Someone mentioned it in the comments) and I gave it a shot. Surprisingly, everything works out of the box
+This guide was written in 2018 for Ubuntu 18.04. If you're installing Linux on a Miix 320 today, start with a current, supported release, such as [Fedora Linux](https://fedoraproject.org/) or [Ubuntu](https://ubuntu.com/download/desktop), rather than the old Ubuntu image linked below. Newer kernels may provide better hardware support without the workarounds this guide needed.
 
-Go [HERE](https://system76.com/pop) and download the Intel version. 
+I haven't tested current releases on this laptop, so I can't promise that everything works out of the box. Try a live USB before installing, and check Wi-Fi, sound, the touchscreen, display rotation, and suspend. Back up your files before changing partitions or installing.
 
-> You can use the instructions below to make the bootable disk etc. But, you don't need to edit any configuration files. It should work out of the box
+The original instructions remain below for historical reference. The boot parameters, X11 commands, and third-party repositories are specific to that older setup; don't apply them to a modern installation unless you've confirmed they're still needed. My earlier recommendation to use Pop!_OS was also based on testing at the time, not on a current release.
 
 ### Choosing a Linux Distro
 
-> Update: I highly recommend Pop OS! Read the above part if you haven't already.
+> The rest of this post describes my Ubuntu 18.04 installation in 2018. Read the update above before following these steps.
 
 I chose Ubuntu 18.04 (~~as of now, it is still in beta - not a public stable release~~) because it will have the latest possible Kernel, which means better hardware support. Lenovo Miix 320 was released very recently and because of that, old Kernels doesn't play nice with the hardware. Even with the latest available hardware, we need to do quite some work to get some stuff (like, boot!) working properly.
 
@@ -64,18 +64,18 @@ The thing is, with the default boot parameters, it just won't boot in this parti
 In the grub menu, press `e` to edit the entry.
 
 Above the line that starts with `linux`, add the following
-```
+```bash
 set gfxpayload=keep
 ```
 At the end of the line that starts with `linux`, add the following
-```
+```bash
 nomodeset i915.modeset=1 fbcon=rotate:1
 ```
 What `nomodeset` does is, it tells the kernel not to load the video drivers until the sytem has finished booting.
 
 Also `fbcon=rotate:1` rotates the display clockwise. We need to do this because, otherwise Ubuntu will be in portrait mode. We don't want that.
 So, the resulting screen would look something like this
-```
+```bash
 set gfxpayload=keep
 linux        /casper/vmlinuz.efi file=/cdrom/preseed/ubuntu.seed boot=casper quiet splash nomodeset i915.modeset=1 fbcon=rotate:1 ---
 ```
@@ -88,18 +88,18 @@ Once the installation is finished, Reboot your laptop. Do not forget to remove t
 > NOTE: After the boot, chances are you will be greeted with a black screen. Just close the lid for a second and open it again and you should see the login screen
 
 Once you boot into the Ubuntu desktop, open a terminal and edit the file `/etc/default/grub`
-```shell
+```bash
 sudo nano /etc/default/grub
 ```
 Add the following lines into it
-```
+```bash
 GRUB_CMDLINE_LINUX="nomodeset i915.modeset=1 fbcon=rotate:1"
 GRUB_GFXPAYLOAD_LINUX=keep
 ```
 Press `Ctrl+X` and then `Y` and press `Enter` to save it.
 
 Open a terminal and run the following
-```
+```bash
 sudo update-grub
 ```
 This will update your Grub with the parameters and you won't have to edit anything next time you boot.
@@ -110,22 +110,22 @@ This will update your Grub with the parameters and you won't have to edit anythi
 Now that we have our Ubuntu installation working, there are many things that still need work.
 #### Disable touchpad while typing
 This can be very annoying. By default, it doesn't disable the touchpad while typing. So, there is a good chance that you might end up touching your touchpad and cause a tragedy. Use the following command to disable touchpad while typing
-```shell
+```bash
 syndaemon -i 0.5 -t -K -d
 ```
 #### Fix the touch screen
 Good news is that, the touch screen works nice. But, it is twisted to the right. You'd come to understand it if you try to scroll/touch the screen.
 
 The following command should fix that and you should be able to use the touch screen properly in landscape.
-```shell
+```bash
 xinput set-prop "04F3224A:00 04F3:237D" 'Coordinate Transformation Matrix' 0 1 0 -1 0 1 0 0 1
 ```
 If this doesn't work for you, your 'ID' might be different. Use the following command to find out the correct ID
-```shell
+```bash
 xinput --list
 ```
 Look for the device id that looks similar to "04F3224A:00 04F3:237D" and use that in the command
-```shell
+```bash
 xinput set-prop "your device id here" 'Coordinate Transformation Matrix' 0 1 0 -1 0 1 0 0 1
 ```
 #### Install Xubuntu
@@ -133,7 +133,7 @@ By default, Ubuntu 18.04 has Gnome as the desktop environment. While it is all s
 
 > Note: this is optional - Only if you need a less resource hungry desktop environment
 
-```shell
+```bash
 sudo apt-get update
 sudo apt-get install xubuntu-desktop
 ```
@@ -141,7 +141,7 @@ Logout, Choose `Xubuntu` from the login screen and you should be good to go.
 
 #### Fixing the brightness
 Yeah, so another thing that doesn't work yet is the brightness control. But, we can have a hack for now. Please note that this thing doesn't help with the battery as it is more like an overlay that reduces the light intensity. But, surely it can help your eyes
-```shell
+```bash
 sudo add-apt-repository ppa:apandada1/brightness-controller
 sudo apt-get update
 sudo apt-get install brightness-controller-simple
@@ -150,7 +150,7 @@ Then, search for `brightness controller` and you can adjust the intensity of the
 
 #### Powersaving
 So, another bad thing is that the battery life would be not great. The following tool might help a bit.
-```shell
+```bash
 sudo add-apt-repository ppa:linrunner/tlp
 sudo apt-get update
 sudo apt-get install tlp tlp-rdw smartmontools ethtool
