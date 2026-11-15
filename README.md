@@ -40,4 +40,24 @@ to avoid redirect loops.
 
 ## In production
 
-Runs via Github pages (the github action definition can be found under `.github/workflows/hugo.yml`)
+The live site is served by Nginx on `root@us1.linode`, with Cloudflare in
+front of it. Verified on 2026-11-15 by matching a public request to the
+Linode access log. GitHub Pages is not the current serving path, and this
+repository has no GitHub Actions deployment workflow.
+
+- Server checkout: `/var/www/archive.esc.sh`
+- Nginx document root: `/var/www/archive.esc.sh/public/`
+- Nginx site configuration: `/etc/nginx/sites-enabled/archive.esc.sh`
+- Access log: `/var/log/nginx/archive.esc.sh_access.log`
+
+Deployment is manual; pushing or merging this repository does not deploy the
+site. Compare the server checkout and live Nginx configuration before updating
+either. The homelab repository owns the Nginx configuration under
+`cloud-vps/linode/us1/nginx/sites-enabled/archive.esc.sh`; its us1 runbook covers
+configuration comparison, backups, validation and rollback.
+
+The live Nginx configuration currently redirects four archive articles to
+Ghost: exposing self-hosted services, cross-continent Plex streaming, WireGuard,
+and Let's Encrypt/Nginx. As part of the archive rollout, point the first two
+directly to their Substack posts and remove the latter two redirects so Nginx
+serves their archive pages. These live changes are not included in this import.
