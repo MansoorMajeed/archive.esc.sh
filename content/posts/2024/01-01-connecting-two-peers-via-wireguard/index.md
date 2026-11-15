@@ -2,11 +2,12 @@
 title: "Setting up Wireguard VPN"
 description: "How can we connect two instances, such as from a local laptop to a remote VM via wireguard"
 author: Mansoor
-date: 2024-01-01T10:32:37-04:00
-lastmod: 2024-01-01T10:32:37-04:00
+date: 2024-01-01T19:20:00Z
+lastmod: 2025-12-30T21:23:28Z
 draft: false
 url: blog/wireguard-vpn-setup
 categories: ["SelfHosting"]
+tags: ["SelfHosting", "Wireguard", "HomeLab"]
 images: []
 ---
 In this post, I will show you how we can connect two peers (any two servers/instances) via Wireguard.

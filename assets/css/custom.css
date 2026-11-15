@@ -3,6 +3,10 @@
     margin-top: 15px;
 }
 
+.post-content :not(pre) > code {
+    overflow-wrap: anywhere;
+}
+
 .post-meta .page-views {
     margin-left: 15px;
     display: inline-block;

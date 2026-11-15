@@ -5,8 +5,6 @@ author: Mansoor
 date: 2024-11-03T04:59:32.058445
 lastmod: 2024-11-03T04:59:32.058496
 draft: true
-url: /blog/setting-up-proxmox-backup-server-on-synology
-images: []
 categories:
     - SelfHosting
 url: /blog/proxmox-backup-synology-nas
