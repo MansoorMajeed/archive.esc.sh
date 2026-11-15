@@ -3,7 +3,6 @@ title: "Easily switch between recent git branches"
 description: "Here is a neat shell alias that allows you to easily switch between git branches using fuzzy search"
 author: Mansoor
 date: 2023-05-10T22:32:37-04:00
-lastmod: 2023-05-10T22:32:37-04:00
 lastmod: 2022-08-03T22:32:37-04:00
 draft: false
 url: blog/switch-git-branches-fzf
