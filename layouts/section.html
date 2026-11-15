@@ -1,0 +1,7 @@
+{{ define "main" }}
+  <header class="page-head">
+    <h1>{{ .Title }}</h1>
+    {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+  </header>
+  {{ partial "post-index.html" (dict "pages" .RegularPagesRecursive "filter" (gt (len .RegularPagesRecursive) 15)) }}
+{{ end }}

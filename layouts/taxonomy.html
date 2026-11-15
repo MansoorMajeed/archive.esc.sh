@@ -1,0 +1,14 @@
+{{ define "main" }}
+  <header class="page-head">
+    <h1>{{ .Title }}</h1>
+  </header>
+  {{ with .Data.Terms.ByCount }}
+    <ul class="terms">
+      {{ range . }}
+        <li><a class="chip" href="{{ .Page.RelPermalink }}">{{ .Page.Title }}<span class="chip__count">{{ .Count }}</span></a></li>
+      {{ end }}
+    </ul>
+  {{ else }}
+    <p class="muted">Nothing here.</p>
+  {{ end }}
+{{ end }}

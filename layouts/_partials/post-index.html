@@ -1,0 +1,26 @@
+{{- /* Expects a dict: pages (page collection), filter (bool). */ -}}
+{{ $pages := where .pages "Params.layout" "ne" "redirect" }}
+{{ if .filter }}
+  <div class="filter">
+    <label class="sr-only" for="post-filter">Filter posts</label>
+    <input id="post-filter" class="filter__input" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Filter {{ len $pages }} posts by title or tag">
+    <span class="filter__hint" aria-hidden="true"><kbd>/</kbd> to focus, <kbd>esc</kbd> to clear</span>
+    <p class="filter__status" id="post-filter-status" role="status" aria-live="polite"></p>
+  </div>
+{{ end }}
+<div class="index" id="post-index">
+  {{ range $pages.GroupByDate "2006" }}
+    <section class="year" data-year>
+      <h2 class="year__label">{{ .Key }}<span class="year__count" data-year-count>{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }}</span></h2>
+      <ul class="year__posts">
+        {{ range .Pages }}
+          <li class="row" data-row data-search="{{ lower .Title }} {{ lower (delimit (.Params.tags | default slice) " ") }} {{ lower (delimit (.Params.categories | default slice) " ") }}">
+            <time class="row__date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 02" }}</time>
+            <a class="row__title" href="{{ .RelPermalink }}">{{ .Title }}</a>
+          </li>
+        {{ end }}
+      </ul>
+    </section>
+  {{ end }}
+</div>

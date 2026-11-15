@@ -1,7 +1,6 @@
 baseurl = "https://archive.esc.sh"
 title = "Esc.sh Archive"
-theme = "hugo-coder"
-languagecode = "en"
+locale = "en"
 defaultcontentlanguage = "en"
 
 pagination.pagerSize = 20
@@ -18,30 +17,14 @@ style = "github-dark"
 
 [params]
   author = "Mansoor"
-  info = "Site Reliability Engineer"
-  description = "This is my old blog."
+  description = "Mansoor's blog archive: posts on Linux, SRE, Kubernetes and self-hosting, from 2012 onwards."
   keywords = "blog,sre,devops,personal"
-  avatarurl = "images/avatar.jpg"
-
-  favicon_32 = "images/favicon.png"
-# favicon_16 = "/img/favicon-16x16.png"
   gitRepo = "https://github.com/MansoorMajeed/archive.esc.sh"
-
-  customCSS = ["/css/custom.css"]
-
   since = 2012
 
-  enableTwemoji = true
-
-  colorScheme = "auto"
-  hidecolorschemetoggle = false
-
-  # customCSS = ["css/custom.css"]
-  # customSCSS = ["scss/custom.scss"]
-  # customJS = ["js/custom.js"]
-
-#[params.goatCounter]
-#code = "esc"
+  # Where newer writing lives; shown in the nav, post footers and site footer.
+  newsletterURL = "https://newsletter.esc.sh"
+  newsletterName = "newsletter.esc.sh"
 
 [params.plausibleAnalytics]
   domain = "archive.esc.sh"
@@ -70,72 +53,66 @@ style = "github-dark"
   tag = "tags"
   author = "authors"
 
-# Social links
-[[params.social]]
-  name = "Github"
-  icon = "fa fa-github fa-2x"
-  weight = 1
-  url = "https://github.com/mansoormajeed/"
-
-[[params.social]]
-  name = "YouTube"
-  icon = "fa fa-youtube fa-2x"
-  weight = 1
-  url = "https://www.youtube.com/@esc-sh/"
-
-[[params.social]]
-  name = "LinkedIn"
-  icon = "fa fa-linkedin fa-2x"
-  weight = 1
-  url = "https://www.linkedin.com/in/mansoormajeed/"
-
-
-
-# Menu links
+# Header links
 
 [[menu.main]]
-  name = "Home"
-  weight = 49
-  url  = "https://blog.esc.sh"
-
-
-[[menu.main]]
-  name = "Self Hosting"
-  weight = 50
-  url = "https://selfhost.esc.sh"
-
+  name = "Posts"
+  weight = 10
+  url = "blog/"
 
 [[menu.main]]
-  name = "DevopsFromScratch"
-  weight = 100
-  url = "projects/devops-from-scratch/"
+  name = "Tags"
+  weight = 20
+  url = "tags/"
 
 [[menu.main]]
   name = "Projects"
-  weight = 200
+  weight = 30
   url = "projects/"
 
 [[menu.main]]
-  name = "Blog Archive"
-  weight = 300
-  url  = "blog/"
-
-[[menu.main]]
-  name = "Tech"
-  weight = 400
-  url  = "https://blog.esc.sh"
-
-
-[[menu.main]]
-  name = "Life"
-  weight = 700
-  url  = "https://life.esc.sh"
-
-[[menu.main]]
   name = "About"
-  weight = 1000
+  weight = 40
   url = "about/"
 
+[[menu.main]]
+  name = "Newsletter"
+  weight = 50
+  url = "https://newsletter.esc.sh"
 
+# Footer links
 
+[[menu.footer]]
+  name = "Quick notes"
+  weight = 10
+  url = "docs/"
 
+[[menu.footer]]
+  name = "Travel"
+  weight = 20
+  url = "travel/"
+
+[[menu.footer]]
+  name = "Contact"
+  weight = 30
+  url = "contact/"
+
+[[menu.footer]]
+  name = "RSS"
+  weight = 40
+  url = "index.xml"
+
+[[menu.footer]]
+  name = "GitHub"
+  weight = 50
+  url = "https://github.com/mansoormajeed/"
+
+[[menu.footer]]
+  name = "YouTube"
+  weight = 60
+  url = "https://www.youtube.com/@esc-sh/"
+
+[[menu.footer]]
+  name = "LinkedIn"
+  weight = 70
+  url = "https://www.linkedin.com/in/mansoormajeed/"
