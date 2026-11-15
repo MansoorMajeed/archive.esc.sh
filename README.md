@@ -5,7 +5,7 @@
 
 The theme lives in this repository (`layouts/`, `assets/css/main.css`,
 `assets/js/site.js`); there is no theme submodule and nothing to install
-besides Hugo.
+besides Hugo 0.146 or newer (older versions cannot read these layouts).
 
 ```sh
 hugo server

@@ -9,6 +9,12 @@ pagination.pagerSize = 20
 style = "github-dark"
 
 
+# The layouts use the template structure introduced in Hugo 0.146
+# (layouts/_partials, page.html, section.html, ...).
+[module]
+  [module.hugoVersion]
+    min = "0.146.0"
+
 # This is needed to add raw html to markdown
 [markup]
   [markup.goldmark]
