@@ -1,0 +1,10 @@
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <nav class="site-footer__links" aria-label="Footer">
+      {{ range site.Menus.footer }}
+        <a href="{{ if hasPrefix .URL "http" }}{{ .URL }}{{ else }}{{ .URL | relURL }}{{ end }}"{{ if hasPrefix .URL "http" }} rel="noopener me"{{ end }}>{{ .Name }}</a>
+      {{ end }}
+    </nav>
+    <p class="site-footer__note">© {{ site.Params.since }}–{{ now.Year }} {{ site.Params.author }}. An archive of older writing; newer posts are at <a href="{{ site.Params.newsletterURL }}">{{ site.Params.newsletterName }}</a>.</p>
+  </div>
+</footer>

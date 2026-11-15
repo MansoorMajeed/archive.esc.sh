@@ -1,0 +1,7 @@
+{{ define "main" }}
+  <header class="page-head">
+    <p class="eyebrow"><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a></p>
+    <h1>{{ .Title }}</h1>
+  </header>
+  {{ partial "post-index.html" (dict "pages" .Pages "filter" (gt (len .Pages) 15)) }}
+{{ end }}

@@ -3,17 +3,15 @@
 
 ## Set up locally
 
-```
-git submodule init
-git submodule update -r
+The theme lives in this repository (`layouts/`, `assets/css/main.css`,
+`assets/js/site.js`); there is no theme submodule and nothing to install
+besides Hugo.
+
+```sh
+hugo server
 ```
 
-if for whatever reason it does not work and the `themes/hugo-coder` directory is empty, then run
-
-```
-git submodule add https://github.com/luizdepra/hugo-coder.git themes/hugo-coder
-hugo
-```
+Then open http://localhost:1313. Add `-D` to include drafts.
 
 ## Ghost archive import
 
@@ -27,10 +25,9 @@ Imported Ghost images, including responsive variants, live under
 Article links to the eight posts selected for Substack point to
 `https://newsletter.esc.sh/p/<slug>`.
 
-Build locally with the pinned theme:
+Build locally:
 
 ```sh
-git submodule update --init
 HUGO_RESOURCEDIR=.scratch/resources hugo --destination .scratch/build --noBuildLock
 ```
 

@@ -1,0 +1,11 @@
+{{- /* Ghost callouts were imported as blockquotes whose first paragraph is a lone 💡. Render those as callout boxes. */ -}}
+{{- $text := .Text | strings.TrimSpace -}}
+{{- $marker := "<p>💡</p>" -}}
+{{- if strings.HasPrefix $text $marker -}}
+<aside class="callout">
+  <span class="callout__icon" aria-hidden="true">💡</span>
+  <div class="callout__body">{{ strings.TrimPrefix $marker $text | safeHTML }}</div>
+</aside>
+{{- else -}}
+<blockquote>{{ .Text }}</blockquote>
+{{- end }}

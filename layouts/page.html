@@ -1,0 +1,66 @@
+{{ define "main" }}
+  {{ $isPost := in (slice "posts" "docs") .Section }}
+  <article class="post">
+    <header class="post__head">
+      {{ if $isPost }}
+        <p class="eyebrow"><a href="{{ "/" | relURL }}">← All posts</a></p>
+      {{ else if .Parent }}{{ if not .Parent.IsHome }}
+        <p class="eyebrow"><a href="{{ .Parent.RelPermalink }}">← {{ .Parent.Title }}</a></p>
+      {{ end }}{{ end }}
+      <h1 class="post__title">{{ .Title }}</h1>
+      {{ if $isPost }}
+        <p class="post__meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+          {{ if gt .Lastmod.Year .Date.Year }}<span>updated {{ .Lastmod.Format "January 2006" }}</span>{{ end }}
+          <span>{{ .ReadingTime }} min read</span>
+        </p>
+        {{ $age := sub now.Year .Lastmod.Year }}
+        {{ if ge $age 3 }}
+          <p class="age-note"><strong>Written in {{ .Date.Year }}.</strong> Commands, versions and links here may be out of date.</p>
+        {{ end }}
+      {{ end }}
+    </header>
+
+    <div class="prose">
+      {{ with .Params.featuredImage }}
+        <img class="post__feature" src="{{ . | relURL }}" alt="">
+      {{ end }}
+      {{ .Content }}
+    </div>
+
+    {{ if $isPost }}
+      <footer class="post__foot">
+        {{ $terms := union (.GetTerms "categories") (.GetTerms "tags") }}
+        {{ with $terms }}
+          <ul class="terms" aria-label="Tags">
+            {{ $seen := slice }}
+            {{ range . }}
+              {{ if not (in $seen (lower .Title)) }}
+                <li><a class="chip" href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+                {{ $seen = $seen | append (lower .Title) }}
+              {{ end }}
+            {{ end }}
+          </ul>
+        {{ end }}
+
+        <aside class="newer">
+          <p>This is the archive. Newer writing lives at <a href="{{ site.Params.newsletterURL }}">{{ site.Params.newsletterName }} <span aria-hidden="true">↗</span></a></p>
+        </aside>
+
+        {{ if and (eq .Section "posts") (ne .Params.layout "redirect") }}
+          <nav class="pager" aria-label="Adjacent posts">
+            {{ $posts := where (where site.RegularPages "Section" "posts") "Params.layout" "ne" "redirect" }}
+            {{ with $posts.Prev . }}<a class="pager__link" href="{{ .RelPermalink }}"><span class="pager__dir">← Older</span><span>{{ .Title }}</span></a>{{ else }}<span></span>{{ end }}
+            {{ with $posts.Next . }}<a class="pager__link pager__link--next" href="{{ .RelPermalink }}"><span class="pager__dir">Newer →</span><span>{{ .Title }}</span></a>{{ end }}
+          </nav>
+        {{ end }}
+
+        {{ with site.Params.gitRepo }}{{ with $.File }}
+          <p class="improve"><a href="{{ site.Params.gitRepo }}/edit/{{ site.Params.gitBranch | default "main" }}/content/{{ path.Clean .Path }}" rel="noopener">Spotted a mistake? Edit this page on GitHub</a></p>
+        {{ end }}{{ end }}
+
+        {{ partial "comments.html" . }}
+      </footer>
+    {{ end }}
+  </article>
+{{ end }}
