@@ -1,24 +1,19 @@
 ---
-author: Mansoor A
-categories:
-- SelfHosting
-date: "2020-09-27T09:17:48Z"
-description: ""
+title: "Let's Encrypt + Nginx - Definitive Guide for SSL (Production Ready)"
+author: "Mansoor"
+date: "2020-09-27T19:14:00Z"
+lastmod: "2026-02-15T20:22:18Z"
 draft: false
-image: https://cdn.esc.sh/2020/09/nginx_letsencrypt.png
-summary: Everything you may need to setup SSL with Lets encrypt and Nginx
-tags:
-- Nginx
-- Letsencrypt
-title: Let's Encrypt + Nginx - Definitive Guide for SSL (Production Ready)
-url: blog/lets-encrypt-and-nginx-definitive-guide
+url: "/blog/lets-encrypt-and-nginx-definitive-guide/"
+tags: ["SelfHosting"]
 ---
 
+> **Feb 2026 Update**: The post has been updated to account for recent changes to certbot such as systemd timer for renewal
 
-This blog post explains how to setup and configure SSL for a domain name
-with Let'sEncrypt and Nginx
+This blog post explains how to setup and configure SSL for a domain name\
+with Let's Encrypt and Nginx
 
-For this tutorial, I will be using a Debian 10 server. This should work for any debian based distro
+This should work for any Debian-based distro (Debian 12/13+, Ubuntu 22.04+, etc.)
 
 ## Goals
 
@@ -27,10 +22,10 @@ For this tutorial, I will be using a Debian 10 server. This should work for any 
 3. HTTP to HTTPS redirection
 4. Auto renew certificates
 5. Redirect www to non-www or viceversa
-    - Redirect www to non-www without http to https redirection 
-    - Redirect www to non-www with http to https redirection
-    - Redirect non-www to www without http to https redirection
-    - Redirect non-www to www with http to https redirection
+   - Redirect www to non-www without http to https redirection
+   - Redirect www to non-www with http to https redirection
+   - Redirect non-www to www without http to https redirection
+   - Redirect non-www to www with http to https redirection
 
 ## Prerequisites
 
@@ -44,14 +39,15 @@ For this tutorial, I will be using a Debian 10 server. This should work for any 
 
 ## Step 1 - Install certbot
 
-Certbot - Let's us fetch SSL certificates from Let's Encrypt
-python3-certbot-nginx - Helps us configure Nginx SSL config
+Certbot fetches SSL certificates from Let's Encrypt. The nginx plugin helps configure Nginx automatically.
 
 ```bash
 sudo apt install certbot python3-certbot-nginx
 ```
 
 ## Step 2 (Optional) - Verify that the domains are pointing to our server IP
+
+If `dig` is not installed, you can use commands such as `nslookup` or even `ping` to verify the IP address
 
 ```bash
 ➜  ~ dig ssl.demo.esc.sh +short
@@ -62,40 +58,15 @@ sudo apt install certbot python3-certbot-nginx
 139.59.42.9
 ```
 
-## Step 3 - Create letsencrypt.conf
-
-Remember, the LetsEncrypt certificates are **valid only for 90 days**. That means, we need to renew them regularly.
-
-This conf is needed so that when letsencrypt tries to renew the certificate, it can access the domain over http without being redirected. That is, without this conf, if we are redirecting all http to https, then even the letsencrypt renewal requests too will get redirected, causing the renewal to fail
-
-
-Create `/etc/nginx/snippets/letsencrypt.conf` with the following content
-
-```nginx
-location ^~ /.well-known/acme-challenge/ {
-    default_type "text/plain";
-    root /var/www/letsencrypt;
-}
-```
-
-Create the directory
-```bash
-mkdir /var/www/letsencrypt
-
-```
 ## Step 3 - Configure Nginx for HTTP
 
-
-If you already have an HTTP configuration, all you have to do is, the `include` part
-
+If you already have an HTTP configuration, you can skip this step.
 
 Create `/etc/nginx/sites-enabled/ssl.demo.esc.sh` (Change the domain name obviously)
 
 ```nginx
 server {
     listen 80;
-
-    include /etc/nginx/snippets/letsencrypt.conf;
 
     server_name ssl.demo.esc.sh www.ssl.demo.esc.sh;
 
@@ -104,7 +75,13 @@ server {
 }
 ```
 
-Verify nginx `nginx -t`
+Verify nginx config
+
+```bash
+sudo nginx -t
+```
+
+If there is any errors such as syntax error, fix it and proceed
 
 Reload Nginx
 
@@ -112,11 +89,18 @@ Reload Nginx
 sudo systemctl reload nginx
 ```
 
-
 ## Step 4 (Optional) - Configure the Firewall
 
-If you have been following the `DevOps From Scratch`, you probably don't have a firewall
-yet, so skip this. But if you do, allow port 80 to be accessed from anywhere
+If you have been following the `DevOps From Scratch`, you probably don't have a firewall\
+yet, so skip this. But if you do, allow port 80 and 443 to be accessed from anywhere
+
+```bash
+sudo apt update && sudo apt install ufw -y
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+```
 
 ## Step 5 - Fetch the Certificate
 
@@ -126,7 +110,7 @@ sudo certbot --nginx -d ssl.demo.esc.sh -d www.ssl.demo.esc.sh
 
 Make sure to give the proper domain names.
 
-If everything went well, you should see something like:
+If everything went well, you should see something like:\
 (Please note that I chose not to setup a redirect from HTTP to HTTPS)
 
 ```text
@@ -160,22 +144,19 @@ https://www.ssllabs.com/ssltest/analyze.html?d=ssl.demo.esc.sh
 https://www.ssllabs.com/ssltest/analyze.html?d=www.ssl.demo.esc.sh
 ```
 
-
-At this point, you should have the certificates in place. Your nginx conf will look
+At this point, you should have the certificates in place. Your nginx conf will look\
 similar to this
 
 ```nginx
 server {
     listen 80;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
-
     server_name ssl.demo.esc.sh www.ssl.demo.esc.sh;
 
     root /var/www/ssl.demo.esc.sh;
     index index.html;
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
@@ -187,14 +168,12 @@ server {
 
 ## Step 6 (Optional) - Redirect HTTP to HTTPS
 
-It is recommended that you enable HTTP to HTTPS redirection
+It is recommended that you enable HTTP to HTTPS redirection.\
 Edit the nginx conf and make it look like this
 
 ```nginx
 server {
     listen 80;
-
-    include /etc/nginx/snippets/letsencrypt.conf;
 
     server_name ssl.demo.esc.sh www.ssl.demo.esc.sh;
 
@@ -205,7 +184,7 @@ server {
 }
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -229,26 +208,47 @@ HTTP/1.1 301 Moved Permanently
 Location: https://ssl.demo.esc.sh/foobar/something.html
 ```
 
-## Step 7 - Enable auto renew
+## Step 7 - Auto Renewal
 
-Let's Encrypt certificates expire in 90 days. So we need to make sure that we renew them much before. Renewal is done by using the command `certbot renew`.
+Let's Encrypt certificates expire in 90 days. The good news is that certbot ships with a **systemd timer** that automatically handles renewal. You don't need to set up a cron job.
 
-Add it as a cron so that it runs every 30 days or so.
+You can verify the timer is active:
 
-Press `crontab -e` to edit the crontab. If you are non-root user, do `sudo crontab -e`
-Add the following lines
-```text
-30 2 * * 1 /usr/bin/certbot renew >> /var/log/certbot_renew.log 2>&1
-35 2 * * 1 /etc/init.d/nginx reload
+```bash
+sudo systemctl list-timers | grep certbot
 ```
-The first one renews the certificate and the second one reloads nginx
-These runs once a month at 2.30AM and 2.35AM respectively
 
-## Step 8 (Optional) - Redirect "www" to "non www" or vice versa
+To test that renewal works:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+If you need nginx to reload after renewal, certbot handles this automatically when using the `--nginx` plugin. If for some reason it doesn't, you can add a deploy hook:
+
+```bash
+sudo sh -c 'printf "#!/bin/sh\nnginx -t && systemctl reload nginx\n" > /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh'
+
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
+```
+
+## Step 8 (Optional) - TLS Hardening
+
+For production, consider adding these to your HTTPS server block:
+
+```nginx
+# Enable HSTS (tells browsers to always use HTTPS)
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+```
+
+Certbot's `options-ssl-nginx.conf` already configures TLS 1.2+ and strong ciphers. If your server and clients support it, TLS 1.3 will be negotiated automatically.
+
+## Step 9 (Optional) - Redirect "www" to "non www" or vice versa
 
 You can either use the `www` version or the `non-www` version of your website. Whatever you choose, stick to it and redirect the other version to the preferred version of the website.
 
 There are 4 possible combinations of requests
+
 1. http request to non-www
 2. http request to www
 3. https request to non-www
@@ -258,11 +258,11 @@ So, we need to have rules to handle all of them.
 
 Pay attention to the `server_name` part and the `return 301`. The idea is, we will create a dedicated server block for what we need redirected and then change the target using the return
 
-So, www -> non-www servr block means `server_name` will be `www` and `return` will be to `non-www`
+So, www -> non-www server block means `server_name` will be `www` and `return` will be to `non-www`
 
-### Option 1 : www -> non wwww (That is, non www preferred)
+### Option 1 : www -> non www (That is, non www preferred)
 
-So, we choose `ssl.demo.esc.sh` (without www) as our preferred name.
+So, we choose `ssl.demo.esc.sh` (without www) as our preferred name.\
 Now we want `www.ssl.demo.esc.sh` redirected to `ssl.demo.esc.sh`
 
 **Now, this depends on whether you are using http -> https redirection**
@@ -276,8 +276,6 @@ Edit the redirection part in the port 80 block to make it look like this:
 server {
     listen 80;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
-
     server_name ssl.demo.esc.sh www.ssl.demo.esc.sh;
 
     # Redirect http -> https
@@ -290,7 +288,7 @@ server {
 # For redirecting www -> non-www (HTTPS request)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -308,7 +306,7 @@ server {
 # For serving the non www site (HTTPS)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -327,15 +325,13 @@ server {
 
 **Please don't do this unless you really have a huge reason to**
 
-Remember, this is a single nginx config. We need all these blocks to deal with
+Remember, this is a single nginx config. We need all these blocks to deal with\
 the all combination scenarios
 
 ```nginx
 # For redirecting www -> non www (HTTP request)
 server {
     listen 80;
-
-    include /etc/nginx/snippets/letsencrypt.conf;
 
     server_name  www.ssl.demo.esc.sh;
 
@@ -349,8 +345,6 @@ server {
 server {
     listen 80;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
-
     server_name ssl.demo.esc.sh;
 
     root /var/www/ssl.demo.esc.sh;
@@ -360,7 +354,7 @@ server {
 # For redirecting www -> non www (https)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -379,7 +373,7 @@ server {
 # For serving the non www site (HTTPS)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -392,28 +386,24 @@ server {
     root /var/www/ssl.demo.esc.sh;
     index index.html;
 }
-
 ```
 
 ### Option 2 - Redirect non-www to www
 
-We choose `www.ssl.demo.esc.sh` as the main domain. So we want to redirect
+We choose `www.ssl.demo.esc.sh` as the main domain. So we want to redirect\
 all request to `ssl.demo.esc.sh` -> `www.ssl.demo.esc.sh`
 
 #### With http -> https redirection
-
 
 ```nginx
 # For redirecting non-www -> www and http -> https (HTTP request)
 server {
     listen 80;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
-
     server_name ssl.demo.esc.sh www.ssl.demo.esc.sh;
 
     # Redirect http -> https
-    # Also Redirect www -> non www
+    # Also Redirect non-www -> www
     location / {
        return 301 https://www.ssl.demo.esc.sh$request_uri;
     }
@@ -422,7 +412,7 @@ server {
 # For redirecting non-www -> www (HTTPS request)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -440,7 +430,7 @@ server {
 # For serving the www site (HTTPS)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -455,20 +445,17 @@ server {
 }
 ```
 
-
 #### Without http -> https redirection
 
 **Please don't do this unless you really have a huge reason to**
 
-Remember, this is a single nginx config. We need all these blocks to deal with
+Remember, this is a single nginx config. We need all these blocks to deal with\
 the all combination scenarios
 
 ```nginx
 # For redirecting non www -> www (HTTP request)
 server {
     listen 80;
-
-    include /etc/nginx/snippets/letsencrypt.conf;
 
     server_name  ssl.demo.esc.sh;
 
@@ -482,8 +469,6 @@ server {
 server {
     listen 80;
 
-    include /etc/nginx/snippets/letsencrypt.conf;
-
     server_name www.ssl.demo.esc.sh;
 
     root /var/www/ssl.demo.esc.sh;
@@ -493,7 +478,7 @@ server {
 # For redirecting non www -> www (https)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -512,7 +497,7 @@ server {
 # For serving the www site (HTTPS)
 server {
 
-    listen 443 ssl; # managed by Certbot
+    listen 443 ssl http2;
 
     ssl_certificate /etc/letsencrypt/live/ssl.demo.esc.sh/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/ssl.demo.esc.sh/privkey.pem; # managed by Certbot
@@ -525,8 +510,16 @@ server {
     root /var/www/ssl.demo.esc.sh;
     index index.html;
 }
-
 ```
 
+## Wildcard Certificates
 
+If you need SSL for all subdomains (e.g., `*.example.com`), you can use a wildcard certificate. This requires the **DNS-01 challenge** instead of HTTP-01, meaning certbot will verify domain ownership by creating a DNS TXT record.
 
+```bash
+sudo certbot certonly --manual --preferred-challenges dns -d "*.ssl.demo.esc.sh" -d ssl.demo.esc.sh
+```
+
+Certbot will ask you to create a TXT record for `_acme-challenge.ssl.demo.esc.sh`. Add it via your DNS provider and then continue.
+
+For automated renewal of wildcard certs, you'll need a DNS plugin for your provider (e.g., `certbot-dns-cloudflare`, `certbot-dns-route53`). Check the [certbot DNS plugins documentation](https://eff-certbot.readthedocs.io/en/latest/using.html#dns-plugins) for your provider.
