@@ -1,7 +1,7 @@
 {{ define "main" }}
   {{ $posts := where site.RegularPages "Section" "posts" }}
   <section class="intro">
-    <h1 class="intro__title">{{ len (where $posts "Params.layout" "ne" "redirect") }} posts, {{ site.Params.since }} to {{ (index $posts 0).Date.Year }}</h1>
+    <h1 class="intro__title">{{ .Params.headline | default site.Title }}</h1>
     <div class="intro__body">{{ .Content }}</div>
   </section>
   {{ partial "post-index.html" (dict "pages" $posts "filter" true) }}

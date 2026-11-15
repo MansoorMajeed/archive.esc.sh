@@ -1,7 +1,8 @@
 ---
 title: Esc.sh Archive
 description: "Mansoor's blog archive: posts on Linux, SRE, Kubernetes and self-hosting, from 2012 onwards."
+headline: archive.esc.sh
 ---
 
-Everything I have written since 2012, kept as it was. A lot of it is outdated.
-Newer writing lives at [newsletter.esc.sh](https://newsletter.esc.sh).
+Hi, I am Mansoor and these are my old blog posts, all the way from 2012, kept as they were. A lot is outdated.
+Newer writing is at [newsletter.esc.sh](https://newsletter.esc.sh).
